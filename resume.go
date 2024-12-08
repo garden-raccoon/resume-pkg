@@ -1,4 +1,4 @@
-package vacancy
+package resume
 
 import (
 	"context"
