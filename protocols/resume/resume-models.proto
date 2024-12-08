@@ -1,0 +1,48 @@
+syntax = "proto3";
+package models;
+
+option go_package = "protocols/resume";
+
+message Resume {
+    bytes           resume_uuid        = 1;
+    bytes           user_uuid = 2;
+    string          name        = 3;
+    ResumeDesc           ResumeDesc       =4;
+}
+
+message ResumeDesc {
+    repeated JobExp JobExps = 1;
+    Candidate Candidate = 2;
+    repeated string skills = 3;
+
+}
+message Candidate {
+    int64 employment_type = 1;
+    int64 working_hours = 2;
+    int64 wishSalary_from = 3;
+    int64 wishSalary_to = 4;
+    string specialization = 5;
+    CandidateBio CandidateBio = 6;
+}
+message CandidateBio{
+    int64 gender =1;
+    int64 age =2;
+    string address =3;
+}
+message JobExp{
+    int64 date_from = 1;
+    int64 date_to = 2;
+    string job_name = 3;
+    JobDesc JobDesc = 4;
+    string job_pos = 5;
+    string job_spec = 6;
+}
+
+message JobDesc{
+    string location = 1;
+    string website = 2;
+}
+
+
+
+
