@@ -1,8 +1,6 @@
 package models
 
 import (
-	proto "github.com/garden-raccoon/resume-pkg/protocols/resume"
-
 	"github.com/gofrs/uuid"
 )
 
@@ -41,71 +39,4 @@ type JobExp struct {
 type JobDesc struct {
 	Location string `json:"location"`
 	Website  string `json:"website"`
-}
-
-// Proto is
-func (res Resume) Proto() *proto.Resume {
-
-	pb := &proto.Resume{
-		ResumeUuid: res.ResumeUUID.Bytes(),
-		UserUuid:   res.UserUUID.Bytes(),
-		Name:       res.Name,
-	}
-	resumeDesc := apiResumeDescToProto(res.ResumeDesc)
-	pb.ResumeDesc = resumeDesc
-	return pb
-}
-
-func apiResumeDescToProto(resumeDesc *ResumeDesc) *proto.ResumeDesc {
-	return &proto.ResumeDesc{
-		JobExps:   jobExpsToProto(resumeDesc.JobExps),
-		Candidate: apiCandidateToProto(resumeDesc.Candidate),
-		Skills:    resumeDesc.Skills,
-	}
-}
-
-func apiCandidateToProto(candApi *Candidate) *proto.Candidate {
-	return &proto.Candidate{
-		EmploymentType: int64(candApi.EmploymentType),
-		WorkingHours:   int64(candApi.WorkingHours),
-		WishSalaryFrom: int64(candApi.WishSalaryFrom),
-		WishSalaryTo:   int64(candApi.WishSalaryTo),
-		Specialization: candApi.Specialization,
-		CandidateBio:   apiCandidateBioToProto(candApi.CandidateBio.Gender, candApi.CandidateBio.Age, candApi.CandidateBio.Address),
-	}
-}
-
-func apiCandidateBioToProto(gender, age int, addr string) *proto.CandidateBio {
-	return &proto.CandidateBio{
-		Gender:  int64(gender),
-		Age:     int64(age),
-		Address: addr,
-	}
-}
-
-func jobExpsToProto(jobExpsApi []*JobExp) []*proto.JobExp {
-	var jobExps []*proto.JobExp
-	for i := range jobExpsApi {
-		jobExps = append(jobExps, apiJobExpToProto(jobExpsApi[i]))
-	}
-	return jobExps
-}
-
-func apiJobExpToProto(jobExpApi *JobExp) *proto.JobExp {
-	jobExp := &proto.JobExp{
-		DateFrom: int64(jobExpApi.DateFrom),
-		DateTo:   int64(jobExpApi.DateTo),
-		JobName:  jobExpApi.JobName,
-		JobPos:   jobExpApi.JobPos,
-		JobSpec:  jobExpApi.JobSpec,
-		JobDesc:  apiJobDescToProto(jobExpApi.JobDesc.Website, jobExpApi.JobDesc.Location),
-	}
-	return jobExp
-}
-
-func apiJobDescToProto(site, loc string) *proto.JobDesc {
-	return &proto.JobDesc{
-		Location: loc,
-		Website:  site,
-	}
 }

@@ -10,6 +10,10 @@ message Resume {
     ResumeDesc           ResumeDesc       =4;
 }
 
+message Resumes {
+    repeated Resume Resumes = 1;
+}
+
 message ResumeDesc {
     repeated JobExp JobExps = 1;
     Candidate Candidate = 2;

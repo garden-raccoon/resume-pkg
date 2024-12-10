@@ -8,6 +8,7 @@ import "resume-models.proto";
 // ResumeService is
 service ResumeService {
     rpc CreateResume(models.Resume) returns(ResumeDbEmpty);
+    rpc GetResumes(ResumeDbEmpty) returns(models.Resumes);
 }
 
 

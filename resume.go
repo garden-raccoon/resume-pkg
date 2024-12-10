@@ -19,6 +19,7 @@ const timeOut = 60
 type IResumeAPI interface {
 	CreateResume(res *models.Resume) error
 
+	GetResumes() ([]*models.Resume, error)
 	// Close GRPC Api connection
 	Close() error
 }
@@ -65,4 +66,19 @@ func (api *Api) initConn(addr string) (err error) {
 
 	api.ClientConn, err = grpc.Dial(addr, grpc.WithInsecure(), grpc.WithKeepaliveParams(kacp))
 	return
+}
+func (api *Api) GetResumes() ([]*models.Resume, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), api.timeout)
+	defer cancel()
+
+	var resp *proto.Resumes
+	empty := new(proto.ResumeDbEmpty)
+	resp, err := api.ResumeServiceClient.GetResumes(ctx, empty)
+	if err != nil {
+		return nil, fmt.Errorf("GetOrders api request: %w", err)
+	}
+
+	resumes := models.ResumesFromProto(resp)
+
+	return resumes, nil
 }
