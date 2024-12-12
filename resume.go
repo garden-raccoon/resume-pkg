@@ -110,7 +110,5 @@ func (api *Api) HealthCheck() error {
 	if resp.Status != grpc_health_v1.HealthCheckResponse_SERVING {
 		return fmt.Errorf("node is %s", errors.New("service is unhealthy"))
 	}
-	fmt.Println("HEALTHY")
-	//api.status = service.StatusHealthy
 	return nil
 }
