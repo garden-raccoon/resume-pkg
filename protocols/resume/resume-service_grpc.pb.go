@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ResumeService_CreateResume_FullMethodName = "/service.ResumeService/CreateResume"
-	ResumeService_GetResumes_FullMethodName   = "/service.ResumeService/GetResumes"
+	ResumeService_CreateResume_FullMethodName    = "/service.ResumeService/CreateResume"
+	ResumeService_GetResumes_FullMethodName      = "/service.ResumeService/GetResumes"
+	ResumeService_GetResumeByUUID_FullMethodName = "/service.ResumeService/GetResumeByUUID"
 )
 
 // ResumeServiceClient is the client API for ResumeService service.
@@ -31,6 +32,7 @@ const (
 type ResumeServiceClient interface {
 	CreateResume(ctx context.Context, in *Resume, opts ...grpc.CallOption) (*ResumeDbEmpty, error)
 	GetResumes(ctx context.Context, in *ResumeDbEmpty, opts ...grpc.CallOption) (*Resumes, error)
+	GetResumeByUUID(ctx context.Context, in *ResumeReq, opts ...grpc.CallOption) (*Resume, error)
 }
 
 type resumeServiceClient struct {
@@ -61,6 +63,16 @@ func (c *resumeServiceClient) GetResumes(ctx context.Context, in *ResumeDbEmpty,
 	return out, nil
 }
 
+func (c *resumeServiceClient) GetResumeByUUID(ctx context.Context, in *ResumeReq, opts ...grpc.CallOption) (*Resume, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Resume)
+	err := c.cc.Invoke(ctx, ResumeService_GetResumeByUUID_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ResumeServiceServer is the server API for ResumeService service.
 // All implementations must embed UnimplementedResumeServiceServer
 // for forward compatibility.
@@ -69,6 +81,7 @@ func (c *resumeServiceClient) GetResumes(ctx context.Context, in *ResumeDbEmpty,
 type ResumeServiceServer interface {
 	CreateResume(context.Context, *Resume) (*ResumeDbEmpty, error)
 	GetResumes(context.Context, *ResumeDbEmpty) (*Resumes, error)
+	GetResumeByUUID(context.Context, *ResumeReq) (*Resume, error)
 	mustEmbedUnimplementedResumeServiceServer()
 }
 
@@ -84,6 +97,9 @@ func (UnimplementedResumeServiceServer) CreateResume(context.Context, *Resume) (
 }
 func (UnimplementedResumeServiceServer) GetResumes(context.Context, *ResumeDbEmpty) (*Resumes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetResumes not implemented")
+}
+func (UnimplementedResumeServiceServer) GetResumeByUUID(context.Context, *ResumeReq) (*Resume, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetResumeByUUID not implemented")
 }
 func (UnimplementedResumeServiceServer) mustEmbedUnimplementedResumeServiceServer() {}
 func (UnimplementedResumeServiceServer) testEmbeddedByValue()                       {}
@@ -142,6 +158,24 @@ func _ResumeService_GetResumes_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ResumeService_GetResumeByUUID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResumeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResumeServiceServer).GetResumeByUUID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ResumeService_GetResumeByUUID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResumeServiceServer).GetResumeByUUID(ctx, req.(*ResumeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ResumeService_ServiceDesc is the grpc.ServiceDesc for ResumeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -156,6 +190,10 @@ var ResumeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetResumes",
 			Handler:    _ResumeService_GetResumes_Handler,
+		},
+		{
+			MethodName: "GetResumeByUUID",
+			Handler:    _ResumeService_GetResumeByUUID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

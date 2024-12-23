@@ -9,8 +9,11 @@ import "resume-models.proto";
 service ResumeService {
     rpc CreateResume(models.Resume) returns(ResumeDbEmpty);
     rpc GetResumes(ResumeDbEmpty) returns(models.Resumes);
+    rpc GetResumeByUUID(ResumeReq) returns(models.Resume);
 }
 
-
+message ResumeReq{
+    bytes       resume_uuid        = 1;
+}
 message ResumeDbEmpty {}
 

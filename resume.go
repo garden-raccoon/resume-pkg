@@ -95,6 +95,21 @@ func (api *Api) GetResumes() ([]*models.Resume, error) {
 
 	return resumes, nil
 }
+
+func (api *Api) GetResumeByUUID(resUUID []byte) (*models.Resume, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), api.timeout)
+	defer cancel()
+	req := &proto.ResumeReq{ResumeUuid: resUUID}
+
+	resp, err := api.ResumeServiceClient.GetResumeByUUID(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("GetResumeByUUID api request: %w", err)
+	}
+
+	res := models.ResumeFromProto(resp)
+	return res, nil
+}
+
 func (api *Api) HealthCheck() error {
 	ctx, cancel := context.WithTimeout(context.Background(), api.timeout)
 	defer cancel()
