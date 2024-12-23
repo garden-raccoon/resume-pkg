@@ -24,7 +24,7 @@ type IResumeAPI interface {
 	CreateResume(res *models.Resume) error
 
 	GetResumes() ([]*models.Resume, error)
-
+	GetResumeByUUID(resUUID []byte) (*models.Resume, error)
 	HealthCheck() error
 
 	// Close GRPC Api connection
